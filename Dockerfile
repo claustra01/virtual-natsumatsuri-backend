@@ -12,5 +12,6 @@ ENV TZ=Asia/Tokyo
 
 COPY --from=build --chown=nonroot:nonroot /opt/app/target/release/virtual-natsumatsuri /bin/server
 
+EXPOSE 8080
 USER nonroot
 ENTRYPOINT [ "/bin/server" ]
