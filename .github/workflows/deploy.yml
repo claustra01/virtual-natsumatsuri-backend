@@ -2,13 +2,13 @@ name: Push to Cloud Run
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: ${{ secrets.GCP_REGION }}
-  SERVICE_NAME: ${{ secrets.GCB_SERVICE_NAME }}
+  SERVICE_NAME: ${{ secrets.GCP_SERVICE_NAME }}
   IMAGE: ${{ secrets.GCP_IMAGE_NAME }}
   TAG: latest
 
