@@ -8,12 +8,12 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: ${{ secrets.GCP_REGION }}
-  SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
-  IMAGE: ${{ secrets.GCP_IMAGE }}
+  SERVICE_NAME: ${{ secrets.GCB_SERVICE_NAME }}
+  IMAGE: ${{ secrets.GCP_IMAGE_NAME }}
   TAG: latest
 
 jobs:
-  build_and_push:
+  push:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,3 +39,4 @@ jobs:
 
       - name: Push
         run: docker push $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG
+    
