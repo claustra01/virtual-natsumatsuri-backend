@@ -2,8 +2,8 @@ name: Push to Cloud Run
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
