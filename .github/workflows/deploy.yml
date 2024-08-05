@@ -1,0 +1,85 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: ${{ secrets.GCP_REGION }}
+  SERVICE_NAME: ${{ secrets.GCP_SERVICE_NAME }}
+  IMAGE: ${{ secrets.GCP_IMAGE_NAME }}
+  TAG: latest
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: "auth"
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCLOUD_AUTH }}"
+
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker $REGION-docker.pkg.dev
+
+      - name: Build
+        run: docker build --platform linux/amd64 -t $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG .
+
+      - name: Push
+        run: docker push $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG
+    
+  deploy:
+    needs: push
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout Terraform Repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'claustra01/virtual-natsumatsuri-infra'
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - id: "auth"
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCLOUD_AUTH }}"
+
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.3
+
+      - name: Init
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Apply
+        run: |
+          export TF_VAR_project_id=$PROJECT_ID
+          export TF_VAR_region=$REGION
+          export TF_VAR_service_name=$SERVICE_NAME
+          export TF_VAR_image_name=$IMAGE
+          cd terraform
+          terraform apply --auto-approve
