@@ -1,4 +1,4 @@
-FROM rust:1-alpine as build
+FROM rust:1-slim-bullseye as build
 ENV TZ=Asia/Tokyo
 
 WORKDIR /opt/app
@@ -7,7 +7,7 @@ COPY . .
 RUN cargo build --release
 
 
-FROM gcr.io/distroless/base:nonroot AS runner
+FROM gcr.io/distroless/cc:nonroot AS runner
 ENV TZ=Asia/Tokyo
 
 COPY --from=build --chown=nonroot:nonroot /opt/app/target/release/virtual-natsumatsuri /bin/server
