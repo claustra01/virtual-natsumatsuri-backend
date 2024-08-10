@@ -1,4 +1,5 @@
 mod handler;
+mod model;
 mod router;
 
 #[tokio::main]
