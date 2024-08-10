@@ -1,30 +1,31 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-struct angle {
+pub struct Angle {
     pub x: f64,
     pub y: f64,
 }
 
 #[derive(Debug, Deserialize)]
-struct acceleration {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-}
-
-#[derive(Debug, Deserialize)]
-struct distance {
+pub struct Acceleration {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 
 #[derive(Debug, Deserialize)]
-struct shooter_data {
+pub struct Distance {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ShooterData {
     pub id: String,
-    pub angle: angle,
-    pub acceleration: acceleration,
-    pub distance: distance,
+    pub message_type: String,
+    pub angle: Angle,
+    pub acceleration: Acceleration,
+    pub distance: Distance,
     pub interval: f64,
 }
