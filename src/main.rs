@@ -1,4 +1,9 @@
 use std::net::SocketAddr;
+use handler::ws::MySender;
+use std::sync::{Arc, Mutex};
+use std::collections::{HashMap, HashSet};
+type Tx = MySender;
+type PeerMap = Arc<Mutex<HashMap<String, HashSet<Tx>>>>;
 
 mod handler;
 mod model;
@@ -6,8 +11,9 @@ mod router;
 
 #[tokio::main]
 async fn main() {
-    let app = router::create_router();
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    let rooms: PeerMap = Arc::new(Mutex::new(HashMap::new()));
+    let app = router::create_router(rooms.clone());
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080").await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(
         listener,

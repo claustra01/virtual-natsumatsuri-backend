@@ -1,1 +1,1 @@
-pub mod shooter;
+pub mod schema;
