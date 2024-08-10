@@ -81,7 +81,9 @@ async fn handle_socket(
                                     peer_map
                                         .broadcast_message(
                                             &params.params(),
-                                            Message::Text(serde_json::to_string(&pointer_schema).unwrap()),
+                                            Message::Text(
+                                                serde_json::to_string(&pointer_schema).unwrap(),
+                                            ),
                                         )
                                         .await;
                                 }
@@ -90,7 +92,9 @@ async fn handle_socket(
                                     peer_map
                                         .broadcast_message(
                                             &params.params(),
-                                            Message::Text(serde_json::to_string(&action_schema).unwrap()),
+                                            Message::Text(
+                                                serde_json::to_string(&action_schema).unwrap(),
+                                            ),
                                         )
                                         .await;
                                 }
