@@ -10,7 +10,7 @@ fn calc_target(angle: schema::Angle) -> shooting::Target {
 }
 
 fn calc_vector(angle: schema::Angle) -> shooting::Vector {
-    // temporary
+    // TODO: temporary
     shooting::Vector { x: 0.0, y: 0.0, z: -1.0 }
 }
 
