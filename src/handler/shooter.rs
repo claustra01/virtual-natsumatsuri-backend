@@ -20,11 +20,13 @@ async fn handle_socket(mut socket: WebSocket, addr: SocketAddr) {
             msg
         } else {
             // client disconnected
+            println!("{:?} disconnected.", addr);
             return;
         };
 
         if socket.send(msg).await.is_err() {
             // client disconnected
+            println!("{:?} disconnected.", addr);
             return;
         }
     }
