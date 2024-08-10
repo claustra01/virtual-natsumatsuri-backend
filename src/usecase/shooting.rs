@@ -10,11 +10,8 @@ fn calc_target(angle: schema::Angle) -> shooting::Target {
 }
 
 fn calc_vector(angle: schema::Angle) -> shooting::Vector {
-    // 偏角からベクトルを計算する
-    let x = f64::sin(angle.x);
-    let y = f64::sin(angle.y);
-    let z = 0.0; // temporary
-    shooting::Vector { x, y, z }
+    // temporary
+    shooting::Vector { x: 0.0, y: 0.0, z: -1.0 }
 }
 
 pub fn build_pointer_schema(msg: schema::Schema) -> shooting::PointerSchema {
