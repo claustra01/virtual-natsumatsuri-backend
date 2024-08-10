@@ -9,6 +9,16 @@ pub enum MessageType {
 }
 
 #[derive(Debug, Deserialize)]
+pub enum EventType {
+    #[serde(rename = "shooter")]
+    Shooter,
+    #[serde(rename = "wanage")]
+    Wanage,
+    #[serde(rename = "hanabi")]
+    Hanabi,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Angle {
     pub x: f64,
     pub y: f64,
@@ -29,8 +39,9 @@ pub struct Distance {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ShooterData {
+pub struct Schema {
     pub id: String,
+    pub event_type: EventType,
     pub message_type: MessageType,
     pub angle: Angle,
     pub acceleration: Acceleration,
