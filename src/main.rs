@@ -7,6 +7,7 @@ use model::sender::PeerMap;
 mod handler;
 mod model;
 mod router;
+mod usecase;
 
 #[tokio::main]
 async fn main() {
