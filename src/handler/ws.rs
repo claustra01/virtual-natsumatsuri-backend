@@ -1,19 +1,19 @@
-use std::{net::SocketAddr, ops::Deref, os::unix::process};
 use axum::{
     extract::{
         connect_info::ConnectInfo,
         ws::{Message, WebSocket, WebSocketUpgrade},
-        State, Query,
+        Query, State,
     },
     response::IntoResponse,
 };
 use futures_util::{SinkExt, StreamExt};
-use tokio::sync::mpsc::{self, UnboundedSender};
-use std::sync::{Arc, Mutex};
-use std::collections::{HashMap, HashSet};
 use serde::Deserialize;
 use serde_with::{serde_as, NoneAsEmptyString};
+use std::collections::{HashMap, HashSet};
 use std::hash::{Hash, Hasher};
+use std::sync::{Arc, Mutex};
+use std::{net::SocketAddr, ops::Deref};
+use tokio::sync::mpsc::{self, UnboundedSender};
 
 #[derive(Clone)]
 pub struct MySender(Arc<UnboundedSender<Message>>);
@@ -63,7 +63,9 @@ impl QueryParams {
     const DEFAULT_ROOM_ID: &'static str = "";
 
     pub fn params(&self) -> String {
-        self.room_id.clone().unwrap_or(Self::DEFAULT_ROOM_ID.to_string())
+        self.room_id
+            .clone()
+            .unwrap_or(Self::DEFAULT_ROOM_ID.to_string())
     }
 }
 
@@ -86,7 +88,7 @@ pub async fn ws_handler(
 }
 
 async fn handle_socket(
-    mut socket: WebSocket,
+    socket: WebSocket,
     addr: SocketAddr,
     peer_map: PeerMap,
     params: QueryParams,
@@ -96,7 +98,9 @@ async fn handle_socket(
     let (tx, mut rx) = mpsc::unbounded_channel();
     {
         let mut peer_map = peer_map.lock().unwrap();
-        let peers = peer_map.entry(params.room_id.clone().expect("room_id is required")).or_insert_with(HashSet::new);
+        let peers = peer_map
+            .entry(params.room_id.clone().expect("room_id is required"))
+            .or_insert_with(HashSet::new);
         peers.insert(MySender(Arc::new(tx.clone())));
     }
 
@@ -122,7 +126,12 @@ async fn handle_socket(
                         crate::model::schema::EventType::Shooter => {
                             println!("Shooter");
                             print!("{:?}", params.room_id.clone().expect("room_id is required"));
-                            broadcast_message(&peer_map, &params.room_id.clone().expect("room_id is required"), Message::Text("hoge".to_string())).await;
+                            broadcast_message(
+                                &peer_map,
+                                &params.room_id.clone().expect("room_id is required"),
+                                Message::Text("hoge".to_string()),
+                            )
+                            .await;
                         }
                         crate::model::schema::EventType::RingToss => {
                             println!("Wanage");
@@ -156,7 +165,8 @@ async fn broadcast_message(peer_map: &PeerMap, room_id: &str, message: Message) 
     let rooms = peer_map.lock().unwrap();
     if let Some(peers) = rooms.get(room_id) {
         for peer in peers {
-            peer.send(message.clone()).expect("Failed to send message to peer");
+            peer.send(message.clone())
+                .expect("Failed to send message to peer");
         }
     }
 }
