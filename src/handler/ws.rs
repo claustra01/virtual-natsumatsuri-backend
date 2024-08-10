@@ -32,8 +32,6 @@ async fn handle_socket(
     peer_map: PeerMap,
     params: QueryParams,
 ) {
-    println!("Handling socket for {:?} with params: {:?}", addr, params);
-
     let (tx, mut rx) = mpsc::unbounded_channel();
     {
         let mut peer_map = peer_map.lock().unwrap();
@@ -43,10 +41,21 @@ async fn handle_socket(
 
     let (mut sender, mut receiver) = socket.split();
 
+    let params_clone = params.clone();
+    let peer_map_clone = peer_map.clone();
     let send_task = tokio::spawn(async move {
         while let Some(msg) = rx.recv().await {
             if sender.send(msg).await.is_err() {
                 println!("{:?} disconnected.", addr);
+                let mut peer_map = peer_map_clone.lock().unwrap();
+                let room_id = params_clone.params().clone();
+                if let Some(peers) = peer_map.get_mut(&room_id) {
+                    peers.retain(|peer| !Arc::ptr_eq(&peer.0, &Arc::new(tx.clone())));
+                    if peers.is_empty() {
+                        peer_map.remove(&room_id);
+                    }
+                }
+
                 return;
             }
         }
@@ -62,7 +71,7 @@ async fn handle_socket(
                     match data.event_type {
                         crate::model::schema::EventType::Shooter => {
                             println!("Shooter event received.");
-                            println!("{:?}", params.params());
+                            println!("{:?}", &params.params().clone());
                             // ここでusecaseを呼び出す
                             peer_map
                                 .broadcast_message(

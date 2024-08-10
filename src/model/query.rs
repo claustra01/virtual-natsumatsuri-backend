@@ -2,7 +2,7 @@ use serde::Deserialize;
 use serde_with::{serde_as, NoneAsEmptyString};
 
 #[serde_as]
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(default)]
 pub struct QueryParams {
     #[serde_as(as = "NoneAsEmptyString")]
