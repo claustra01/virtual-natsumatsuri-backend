@@ -12,10 +12,10 @@ pub enum MessageType {
 pub enum EventType {
     #[serde(rename = "shooter")]
     Shooter,
-    #[serde(rename = "wanage")]
-    Wanage,
-    #[serde(rename = "hanabi")]
-    Hanabi,
+    #[serde(rename = "ring_toss")]
+    RingToss,
+    #[serde(rename = "fire_flower")]
+    FireFlower,
 }
 
 #[derive(Debug, Deserialize)]
