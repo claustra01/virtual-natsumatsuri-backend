@@ -1,2 +1,2 @@
 pub mod hello;
-pub mod shooter;
+pub mod ws;

@@ -8,7 +8,8 @@ use axum::{
     response::IntoResponse,
 };
 
-pub async fn shooter_handler(
+
+pub async fn ws_handler(
     ws: WebSocketUpgrade,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
 ) -> impl IntoResponse {
@@ -21,9 +22,25 @@ async fn handle_socket(mut socket: WebSocket, addr: SocketAddr) {
         if let Ok(msg) = msg {
             let msg_txt = msg.to_text();
             if let Ok(msg_txt) = msg_txt {
-                let result = serde_json::from_str::<crate::model::shooter::ShooterData>(msg_txt);
+                let result = serde_json::from_str::<crate::model::shooter::Schema>(msg_txt);
                 if let Ok(data) = result {
-                    println!("{:?}", data.id);
+                    match data.event_type {
+                        crate::model::shooter::EventType::Shooter => {
+                            // 射的の処理
+                            println!("Shooter");
+                        }
+                        crate::model::shooter::EventType::Wanage => {
+                            // 輪投げの処理
+                            println!("Wanage");
+                        }
+                        crate::model::shooter::EventType::Hanabi => {
+                            // 花火の処理
+                            println!("Hanabi");
+                        }
+                        _ => {
+                            println!("Unknown");
+                        }
+                    }
                     if socket.send(Message::Text(data.id)).await.is_err() {
                         // client disconnected
                         println!("{:?} disconnected.", addr);
