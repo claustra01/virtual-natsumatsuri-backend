@@ -2,8 +2,8 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub enum MessageType {
-    #[serde(rename = "pointer")]
-    Pointer,
+    #[serde(rename = "status")]
+    Status,
     #[serde(rename = "action")]
     Action,
 }
