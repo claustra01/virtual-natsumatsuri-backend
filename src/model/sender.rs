@@ -38,8 +38,13 @@ pub trait PeerMapTrait {
 
 impl PeerMapTrait for PeerMap {
     async fn broadcast_message(&self, room_id: &str, message: Message) {
-        let rooms = self.lock().unwrap();
-        if let Some(peers) = rooms.get(room_id) {
+        // ロックはここで取得
+        let peers = {
+            let rooms = self.lock().unwrap();
+            rooms.get(room_id).cloned() // Cloneしてロックを外す
+        };
+
+        if let Some(peers) = peers {
             for peer in peers {
                 peer.send(message.clone())
                     .expect("Failed to send message to peer");
