@@ -13,8 +13,10 @@ use tokio::sync::mpsc::{self};
 
 use crate::model::{
     query::QueryParams,
+    schema,
     sender::{MySender, PeerMap, PeerMapTrait},
 };
+use crate::usecase::shooting;
 
 pub async fn ws_handler(
     ws: WebSocketUpgrade,
@@ -66,24 +68,42 @@ async fn handle_socket(
         if let Ok(msg) = msg {
             let msg_txt = msg.to_text();
             if let Ok(msg_txt) = msg_txt {
-                let result = serde_json::from_str::<crate::model::schema::Schema>(msg_txt);
+                let result = serde_json::from_str::<schema::Schema>(msg_txt);
                 if let Ok(data) = result {
                     match data.event_type {
-                        crate::model::schema::EventType::Shooter => {
+                        schema::EventType::Shooter => {
                             println!("Shooter event received.");
                             println!("{:?}", &params.params().clone());
-                            // ここでusecaseを呼び出す
-                            peer_map
-                                .broadcast_message(
-                                    &params.params(),
-                                    Message::Text("hoge".to_string()),
-                                )
-                                .await;
+                            // usecase
+                            match data.message_type {
+                                schema::MessageType::Status => {
+                                    let pointer_schema = shooting::build_pointer_schema(data);
+                                    peer_map
+                                        .broadcast_message(
+                                            &params.params(),
+                                            Message::Text(
+                                                serde_json::to_string(&pointer_schema).unwrap(),
+                                            ),
+                                        )
+                                        .await;
+                                }
+                                schema::MessageType::Action => {
+                                    let action_schema = shooting::build_action_schema(data);
+                                    peer_map
+                                        .broadcast_message(
+                                            &params.params(),
+                                            Message::Text(
+                                                serde_json::to_string(&action_schema).unwrap(),
+                                            ),
+                                        )
+                                        .await;
+                                }
+                            }
                         }
-                        crate::model::schema::EventType::RingToss => {
+                        schema::EventType::RingToss => {
                             println!("RingToss event received.");
                         }
-                        crate::model::schema::EventType::FireFlower => {
+                        schema::EventType::FireFlower => {
                             println!("FireFlower event received.");
                         }
                     }

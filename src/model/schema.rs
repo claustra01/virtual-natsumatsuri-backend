@@ -1,14 +1,14 @@
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub enum MessageType {
-    #[serde(rename = "pointer")]
-    Pointer,
+    #[serde(rename = "status")]
+    Status,
     #[serde(rename = "action")]
     Action,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub enum EventType {
     #[serde(rename = "shooter")]
     Shooter,
@@ -18,27 +18,27 @@ pub enum EventType {
     FireFlower,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Angle {
     pub x: f64,
     pub y: f64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Acceleration {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Distance {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Schema {
     pub id: String,
     pub event_type: EventType,
