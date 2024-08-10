@@ -61,8 +61,8 @@ async fn handle_socket(
                 if let Ok(data) = result {
                     match data.event_type {
                         crate::model::schema::EventType::Shooter => {
-                            println!("Shooter");
-                            print!("{:?}", params.params());
+                            println!("Shooter event received.");
+                            println!("{:?}", params.params());
                             // ここでusecaseを呼び出す
                             peer_map
                                 .broadcast_message(
@@ -72,10 +72,10 @@ async fn handle_socket(
                                 .await;
                         }
                         crate::model::schema::EventType::RingToss => {
-                            println!("Wanage");
+                            println!("RingToss event received.");
                         }
                         crate::model::schema::EventType::FireFlower => {
-                            println!("Hanabi");
+                            println!("FireFlower event received.");
                         }
                     }
                 } else {
