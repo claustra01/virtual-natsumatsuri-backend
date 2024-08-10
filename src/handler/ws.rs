@@ -8,7 +8,6 @@ use axum::{
     response::IntoResponse,
 };
 
-
 pub async fn ws_handler(
     ws: WebSocketUpgrade,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
