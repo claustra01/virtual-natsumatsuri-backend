@@ -57,7 +57,6 @@ async fn handle_socket(
                         peer_map.remove(&room_id);
                     }
                 }
-
                 return;
             }
         }

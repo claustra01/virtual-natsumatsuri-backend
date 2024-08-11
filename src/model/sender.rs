@@ -46,8 +46,13 @@ impl PeerMapTrait for PeerMap {
 
         if let Some(peers) = peers {
             for peer in peers {
-                peer.send(message.clone())
-                    .expect("Failed to send message to peer");
+                if peer.is_closed() {
+                    eprintln!("Warning: Attempted to send message to a closed channel.");
+                    continue;
+                }
+                if let Err(e) = peer.send(message.clone()) {
+                    eprintln!("Failed to send message to peer: {:?}", e);
+                }
             }
         }
     }
