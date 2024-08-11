@@ -47,6 +47,7 @@ impl PeerMapTrait for PeerMap {
         if let Some(peers) = peers {
             for peer in peers {
                 if peer.is_closed() {
+                    self.lock().unwrap().get_mut(room_id).unwrap().remove(&peer);
                     eprintln!("Warning: Attempted to send message to a closed channel.");
                     continue;
                 }
