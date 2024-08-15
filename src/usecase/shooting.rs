@@ -35,3 +35,10 @@ pub fn build_action_schema(msg: schema::Schema) -> shooting::ActionSchema {
         vector: calc_vector(msg.angle.clone()),
     }
 }
+
+pub fn build_hit_schema(msg: schema::Schema) -> shooting::HitCountSchema {
+    shooting::HitCountSchema {
+        id: msg.id,
+        message_type: shooting::MessageType::Hit,
+    }
+}

@@ -97,6 +97,17 @@ async fn handle_socket(
                                         )
                                         .await;
                                 }
+                                schema::MessageType::Hit => {
+                                    let hit_count_schema = shooting::build_hit_schema(data);
+                                    peer_map
+                                        .broadcast_message(
+                                            &params.params(),
+                                            Message::Text(
+                                                serde_json::to_string(&hit_count_schema).unwrap(),
+                                            ),
+                                        )
+                                        .await;
+                                }
                             }
                         }
                         schema::EventType::RingToss => {

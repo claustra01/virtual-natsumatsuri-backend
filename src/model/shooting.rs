@@ -6,6 +6,8 @@ pub enum MessageType {
     Pointer,
     #[serde(rename = "action")]
     Action,
+    #[serde(rename = "hit")]
+    Hit,
 }
 
 #[derive(Debug, Serialize)]
@@ -34,4 +36,10 @@ pub struct ActionSchema {
     pub message_type: MessageType,
     pub target: Target,
     pub vector: Vector,
+}
+
+#[derive(Debug, Serialize)]
+pub struct HitCountSchema {
+    pub id: String,
+    pub message_type: MessageType,
 }

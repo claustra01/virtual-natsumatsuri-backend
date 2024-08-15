@@ -6,6 +6,8 @@ pub enum MessageType {
     Status,
     #[serde(rename = "action")]
     Action,
+    #[serde(rename = "hit")]
+    Hit,
 }
 
 #[derive(Clone, Debug, Deserialize)]
