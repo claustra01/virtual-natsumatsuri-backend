@@ -3,10 +3,10 @@ use std::f64::consts::PI;
 
 fn calc_target(angle: schema::Angle) -> shooting::Target {
     // 偏角から照準座標を計算する
-    // 画面中央を原点としてそこから横方向端までの距離を1としている
+    // 画面中央を原点としている
     // フロント側でこの値にdisplaySizeを掛けて画面サイズに合わせる
-    let x = 4.0 * f64::tan(PI * angle.x / 180.0);
-    let y = 4.0 * f64::tan(PI * angle.y / 180.0);
+    let x = f64::tan(PI * angle.x / 180.0);
+    let y = f64::tan(PI * angle.y / 180.0);
     shooting::Target { x, y }
 }
 
