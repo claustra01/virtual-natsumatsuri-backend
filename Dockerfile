@@ -1,4 +1,4 @@
-FROM rust:1-slim-bullseye as build
+FROM rust:1-slim-bullseye AS build
 ENV TZ=Asia/Tokyo
 
 WORKDIR /opt/app
